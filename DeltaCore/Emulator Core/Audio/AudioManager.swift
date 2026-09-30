@@ -203,6 +203,12 @@ public extension AudioManager
             self?.isMuted = isMuted
         }
         
+        #if targetEnvironment(simulator)
+        // DeltaSwipe patch: AVAudioSession activation can deadlock in
+        // headless/CLI-driven simulators (AudioToolbox device-aggregate
+        // observers), freezing EmulatorCore.start() forever. Skip session
+        // activation when running in the simulator; device builds unaffected.
+        #else
         do
         {
             // Interrupt other audio by activating a non-mixing session.
@@ -229,6 +235,7 @@ public extension AudioManager
         {
             print(error)
         }
+        #endif
         
         self.resetAudioEngine()
 

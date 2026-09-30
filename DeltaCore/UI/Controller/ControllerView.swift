@@ -121,7 +121,8 @@ public class ControllerView: UIView, GameController
     }
     
     internal var isControllerInputView = false
-    internal var gameViews: [GameView] {
+    /// Includes screens embedded in the controller skin and its keyboard input view.
+    public var gameViews: [GameView] {
         var sortedGameViews = self.gameViewsByScreenID.lazy.sorted { $0.key < $1.key }.map { $0.value }
         
         if let controllerView = self.controllerInputView?.controllerView

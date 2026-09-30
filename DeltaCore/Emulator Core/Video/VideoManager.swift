@@ -54,6 +54,9 @@ public class VideoManager: NSObject, VideoRendering
     }
     private let _gameViews: NSHashTable = NSHashTable<GameView>.weakObjects()
     
+    /// Called on the emulation thread with an owned image. Keep the handler nonblocking.
+    public var frameHandler: ((CIImage) -> Void)?
+
     public var isEnabled = true
     
     private let eaglContext: EAGLContext?
@@ -161,6 +164,7 @@ public extension VideoManager
         
         autoreleasepool {
             self.processedImage = self.processor.processFrame()
+            if let image = self.processedImage { self.frameHandler?(image) }
         }
     }
     
